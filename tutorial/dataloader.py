@@ -153,10 +153,9 @@ class PixelClusterDataset(Dataset):
         all_t = rh['time'][:self._n]
         all_x = rh['x'][:self._n]
         all_y = rh['y'][:self._n]
-        all_z = rh['z'][:self._n]
         print(f"    HDF5 read complete, building tensor...")
 
-        self._X = torch.zeros(self._n, max_hits, 5, dtype=torch.float32)
+        self._X = torch.zeros(self._n, max_hits, 4, dtype=torch.float32)
         for i in range(self._n):
             e = all_e[i]
             nhits = min(len(e), max_hits)
@@ -166,8 +165,7 @@ class PixelClusterDataset(Dataset):
                 self._X[i, :nhits, 1] = torch.from_numpy(all_t[i][order].astype(np.float32))
                 self._X[i, :nhits, 2] = torch.from_numpy(all_x[i][order].astype(np.float32))
                 self._X[i, :nhits, 3] = torch.from_numpy(all_y[i][order].astype(np.float32))
-                self._X[i, :nhits, 4] = torch.from_numpy(all_z[i][order].astype(np.float32))
-        del all_e, all_t, all_x, all_y, all_z
+        del all_e, all_t, all_x, all_y
 
         if label_override is not None:
             self._labels = torch.full((self._n,), label_override, dtype=torch.int64)
